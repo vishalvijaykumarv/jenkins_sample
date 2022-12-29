@@ -1,0 +1,77 @@
+version: '3'
+services:
+
+  # jenkins:
+  #   container_name: jenkins
+  #   image: jenkins/jenkins
+  #   ports:
+  #   - "8010:8080"
+  #   volumes:
+  #   - $PWD/jenkins_home:/var/jenkins_home
+  #   restart: always
+  #   networks:
+  #   - my_private_network
+
+  remote_host:
+    container_name: remote-host
+    image: remote-host
+    build:
+      context: centos
+    volumes:
+      - "$PWD/centos/mysql_backup.sh:/tmp/mysql_backup.sh"
+      - "$PWD/centos/sample_1.sh:/tmp/sample_1.sh"
+    restart: always
+    networks:
+      - my_private_network
+
+  db_host:
+    container_name: db
+    image: mysql:5.7
+    environment:
+    - "MYSQL_ROOT_PASSWORD=1234"
+    volumes:
+      - "$PWD/db_data:/var/lib/mysql"
+    restart: always
+    networks:
+      - my_private_network
+
+  ansible:
+    container_name: jenkins_ansible
+    image: jenkins-ansible
+    build:
+      context: jenkins-ansible
+    ports:
+    - "8020:8080"
+    volumes:
+    - $PWD/ansible_home:/var/jenkins_home
+    - $PWD/jenkins-ansible/ansible:/opt/ansible
+    restart: always
+    networks:
+    - my_private_network
+
+  web:
+    container_name: web
+    image: ansible-web
+    build:
+      context: jenkins-ansible/web
+    ports:
+      - "8030:80"
+    restart: always
+    networks:
+      - my_private_network
+
+  # git:
+  #     container_name: Gitlab
+  #     image: 'gitlab/gitlab-ee:latest'
+  #     restart: always
+  #     hostname: 'gitlab.example.com'
+  #     ports:
+  #       - '8090:80'
+  #     volumes:
+  #       - '$PWD/gitlab/config:/etc/gitlab'
+  #       - '$PWD/gitlab/logs:/var/log/gitlab'
+  #       - '$PWD/gitlab/data:/var/opt/gitlab'
+
+networks:
+  my_private_network:
+    external: true

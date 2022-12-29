@@ -1,0 +1,31 @@
+job('my_first_dsl_job') {
+  description('This is my first dsl job creation from a seed job')
+  
+  parameters {
+  	stringParam('NAME',defaultValue = 'vishal',description = 'This is the name that we are passing into the shell')
+    booleanParam('FLAG', true)
+    choiceParam('OPTION',['option 1 (default)','option 2','option 3'])
+  }
+
+  scm {
+    git('https://github.com/jenkins-docs/simple-java-maven-app.git','master')
+  }
+
+  triggers {
+    cron('H 5 * * 7')
+  }
+
+  steps {
+    shell("""
+            echo 'Hello vishal'
+            echo 'vishal is a Devops'
+          """
+    )
+  
+  publishers {
+    mailer('vishal@xorstack.com',true,true)
+  }
+  
+}
+
+}

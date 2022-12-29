@@ -1,0 +1,9 @@
+*remote-key
+*.pub
+jenkins_home
+db_data
+ansible_home
+*.txt
+gitlab/config
+gitlab/data
+gitlab/logs

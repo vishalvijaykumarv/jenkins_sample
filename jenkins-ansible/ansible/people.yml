@@ -1,0 +1,6 @@
+- hosts: web1
+  tasks:
+   - name: Tranfer template to web server 
+     template:
+       src: index.php
+       dest: /var/www/html/index.php
