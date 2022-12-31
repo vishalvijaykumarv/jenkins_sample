@@ -1,0 +1,24 @@
+
+job('ansible_job') {
+    description('This is my dsl job for ansible')
+    
+    parameters {
+        
+      choiceParam('AGE',['22 (default)','23','24'])
+    }
+  
+    steps {
+        wrappers {
+            colorizeOutput(colorMap = 'xterm')
+        }
+
+        ansiblePlaybook('/opt/ansible/people.yml')
+        inventoryPath('/opt/ansible/hosts')
+        colorizeOutput(true)
+        extraVars {
+            extraVar("PEOPLE_AGE", '${AGE}', false)
+        }
+    
+  }
+  
+}
