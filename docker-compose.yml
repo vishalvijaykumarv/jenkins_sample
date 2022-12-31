@@ -1,17 +1,6 @@
 version: '3'
 services:
 
-  # jenkins:
-  #   container_name: jenkins
-  #   image: jenkins/jenkins
-  #   ports:
-  #   - "8010:8080"
-  #   volumes:
-  #   - $PWD/jenkins_home:/var/jenkins_home
-  #   restart: always
-  #   networks:
-  #   - my_private_network
-
   remote_host:
     container_name: remote-host
     image: remote-host
@@ -35,16 +24,17 @@ services:
     networks:
       - my_private_network
 
-  ansible:
-    container_name: jenkins_ansible
-    image: jenkins-ansible
+  jen_doc:
+    container_name: docker_jenkins
+    image: jenkins-docker
     build:
-      context: jenkins-ansible
+      context: Jenkins_Docker
     ports:
-    - "8020:8080"
+    - "8040:8080"
     volumes:
     - $PWD/ansible_home:/var/jenkins_home
     - $PWD/jenkins-ansible/ansible:/opt/ansible
+    - "/var/run/docker.sock:/var/run/docker.sock"
     restart: always
     networks:
     - my_private_network
@@ -60,6 +50,21 @@ services:
     networks:
       - my_private_network
 
+
+  # ansible:
+  #   container_name: jenkins_ansible
+  #   image: jenkins-ansible
+  #   build:
+  #     context: jenkins-ansible
+  #   ports:
+  #   - "8020:8080"
+  #   volumes:
+  #   - $PWD/ansible_home:/var/jenkins_home
+  #   - $PWD/jenkins-ansible/ansible:/opt/ansible
+  #   restart: always
+  #   networks:
+  #   - my_private_network
+
   # git:
   #     container_name: Gitlab
   #     image: 'gitlab/gitlab-ee:latest'
@@ -71,6 +76,17 @@ services:
   #       - '$PWD/gitlab/config:/etc/gitlab'
   #       - '$PWD/gitlab/logs:/var/log/gitlab'
   #       - '$PWD/gitlab/data:/var/opt/gitlab'
+
+  # jenkins:
+  #   container_name: jenkins
+  #   image: jenkins/jenkins
+  #   ports:
+  #   - "8010:8080"
+  #   volumes:
+  #   - $PWD/jenkins_home:/var/jenkins_home
+  #   restart: always
+  #   networks:
+  #   - my_private_network
 
 networks:
   my_private_network:
